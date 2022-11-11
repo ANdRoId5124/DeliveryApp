@@ -19,11 +19,11 @@ public class UserController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/register")
-    public User registration(@RequestBody User user){
-        cartService.createCart(user);
-        return userService.register(user);
-    }
+//    @PostMapping("/register")
+//    public User registration(@RequestBody User user){
+//        cartService.createCart(user);
+//        return userService.register(user);
+//    }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Integer id){

@@ -25,9 +25,9 @@ public class User {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-//    @ManyToMany
-//    @JoinColumn(name = "role_id")
-//    private List<Role> roles;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public Integer getId() {
         return id;
@@ -77,11 +77,11 @@ public class User {
         return restaurant;
     }
 
-    //    public List<Role> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setRoles(List<Role> roles) {
-//        this.roles = roles;
-//    }
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

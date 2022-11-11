@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/manager/menu")
 public class RestaurantMenuController {
     private final RestaurantMenuService restaurantMenuService;
     private final UserService userService;
