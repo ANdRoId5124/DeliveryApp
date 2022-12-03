@@ -1,32 +1,48 @@
 package com.example.deliveryapp.controller;
 
+import com.example.deliveryapp.OrderHolder.OrderHolder;
+import com.example.deliveryapp.UserHolder.UserHolder;
+import com.example.deliveryapp.enteties.Order;
+import com.example.deliveryapp.service.FoodService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.deliveryapp.enteties.User;
-import com.example.deliveryapp.service.CartService;
-import com.example.deliveryapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
-    private final CartService cartService;
+    private final UserHolder userHolder;
+    private final FoodService foodService;
 
-    @Autowired
-    public UserController(UserService userService, CartService cartService) {
-        this.userService = userService;
-        this.cartService = cartService;
+    public UserController(UserHolder userHolder, FoodService foodService) {
+        this.userHolder = userHolder;
+        this.foodService = foodService;
     }
 
-//    @PostMapping("/register")
-//    public User registration(@RequestBody User user){
-//        cartService.createCart(user);
-//        return userService.register(user);
-//    }
-
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id){
-        return userService.findById(id).get();
+    @PostMapping("/pay/{orderId}")
+    public ResponseEntity<?> payForOrder(@PathVariable Integer orderId) {
+//        if (!userHolder.getAuthUser().getCart().getOrders().isEmpty()) {
+//            if (userHolder.getAuthUser().getCart().getOrders()
+//                    .contains(foodService.getFood(orderId))) {
+        Set<Order> orders = userHolder.getAuthUser().getCart().getOrders();
+        Order[] arrayOfOrders = orders.toArray(new Order[0]);
+        for (Order order : arrayOfOrders) {
+            if (order.getOrderId() == orderId) {
+                OrderHolder.setToOrderHolder(order);
+                return new ResponseEntity<>("pay confirmed", HttpStatus.OK);
+//                    }
+//                }
+//            } else return new ResponseEntity<>("order not found", HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>("cart is empty", HttpStatus.NOT_FOUND);
+            }
+        }
+        return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
     }
 }

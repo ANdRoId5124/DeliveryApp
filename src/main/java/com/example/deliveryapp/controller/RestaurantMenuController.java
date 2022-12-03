@@ -1,6 +1,7 @@
 package com.example.deliveryapp.controller;
 
 
+import com.example.deliveryapp.UserHolder.UserHolder;
 import com.example.deliveryapp.enteties.Food;
 import com.example.deliveryapp.enteties.Restaurant;
 import com.example.deliveryapp.enteties.RestaurantMenu;
@@ -10,13 +11,15 @@ import com.example.deliveryapp.service.RestaurantMenuService;
 import com.example.deliveryapp.service.RestaurantService;
 import com.example.deliveryapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/manager/menu")
 public class RestaurantMenuController {
     private final RestaurantMenuService restaurantMenuService;
     private final UserService userService;
@@ -24,32 +27,45 @@ public class RestaurantMenuController {
     private final FoodService foodService;
     private final RestaurantService restaurantService;
 
+    private final UserHolder userHolder;
+
     @Autowired
-    public RestaurantMenuController(RestaurantMenuService restaurantMenuService, UserService userService, FoodService foodService, RestaurantService restaurantService) {
+    public RestaurantMenuController(RestaurantMenuService restaurantMenuService, UserService userService, FoodService foodService, RestaurantService restaurantService, UserHolder userHolder) {
         this.restaurantMenuService = restaurantMenuService;
         this.userService = userService;
         this.foodService = foodService;
         this.restaurantService = restaurantService;
+        this.userHolder = userHolder;
     }
 
-    @GetMapping("/get_menu/{userId}") // for test
-    public RestaurantMenu getMenu(@PathVariable Integer userId){
-        User user = userService.findById(userId).get();
+    @GetMapping("/get_menu/{restaurantId}")
+    public ResponseEntity<?> getMenuForUser(@PathVariable Integer restaurantId) {
+        String responseForNotFound = "Sorry we don't have menu now";
+        if (restaurantService.getRestaurant(restaurantId).get().getMenu() != null) {
+            Set<Food> restaurantMenu = restaurantService.getRestaurant(restaurantId).get().getMenu().getMenu();
+            if (restaurantMenu == null) {
+                return new ResponseEntity<>(responseForNotFound, HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(restaurantMenu, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(responseForNotFound, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/manager/get_menu")
+    public RestaurantMenu getMenu() {
+        User user = userHolder.getAuthUser();
         return user.getRestaurant().getMenu();
     }
 
-    @PostMapping("/add_menu/{userId}") //userId for testing, in future will use AUTH USER
-    public RestaurantMenu addMenu(@PathVariable Integer userId,
-                                  @RequestBody RestaurantMenu restaurantMenu) {
-        //User user = userHolder.getAuthUser(); get auth user, when will be added Spring Security
-        User user = userService.findById(userId).get();
+    @PostMapping("/manager/add_menu")
+    public RestaurantMenu addMenu(@RequestBody RestaurantMenu restaurantMenu) {
+        User user = userHolder.getAuthUser();
         return restaurantMenuService.createMenu(user, restaurantMenu);
     }
 
-    @PutMapping("/update_menu/add_item/{userId}")
-    public RestaurantMenu updateMenuAddItem(@PathVariable Integer userId,
-                                            @RequestBody Food food) {
-        User user = userService.findById(userId).get();
+    @PutMapping("/manager/update_menu/add_item")
+    public RestaurantMenu updateMenuAddItem(@RequestBody Food food) {
+        User user = userHolder.getAuthUser();
         Restaurant restaurant = user.getRestaurant();
         RestaurantMenu menu = restaurant.getMenu();
         if (menu.getMenu() != null) {
@@ -65,18 +81,18 @@ public class RestaurantMenuController {
         userService.updateUser(user);
         return menu;
     }
- // Do more if!!!
-    @PutMapping("/update_menu/delete_item/{userId}/{foodId}")
-    public RestaurantMenu updateMenuDeleteItem(@PathVariable Integer userId,
-                                               @PathVariable Integer foodId) {
-        User user = userService.findById(userId).get();
+
+    // Do more if!!!
+    @PutMapping("/manager/update_menu/delete_item/{foodId}")
+    public RestaurantMenu updateMenuDeleteItem(@PathVariable Integer foodId) {
+        User user = userHolder.getAuthUser();
         Restaurant usersRestaurant = user.getRestaurant();
         if (usersRestaurant != null) {
             RestaurantMenu menu = usersRestaurant.getMenu();
             if (menu != null) {
                 Set<Food> foods = menu.getMenu();
-                if(foods != null){
-                    if(!foods.isEmpty()){
+                if (foods != null) {
+                    if (!foods.isEmpty()) {
                         Food foodForRemove = foodService.getFood(foodId).get(); //here IF !!
                         foods.remove(foodForRemove);
                         restaurantMenuService.update(menu);

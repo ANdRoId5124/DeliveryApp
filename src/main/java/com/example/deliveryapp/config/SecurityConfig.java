@@ -1,6 +1,5 @@
 package com.example.deliveryapp.config;
 
-
 import com.example.deliveryapp.config.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,12 +29,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/manager/*")
+                .antMatchers("/manager/**")
                 .hasRole("MANAGER")
-                .antMatchers("/user/*")
-                .hasAnyRole("USER", "MANAGER")
-               // .antMatchers("/manager/*")
-               // .hasRole("MANAGER")
+                .antMatchers("/delivery/**")
+                .hasRole("DELIVERY")
+                .antMatchers("/user/**")
+                .hasAnyRole("USER", "MANAGER", "DELIVERY")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -1,7 +1,6 @@
 package com.example.deliveryapp.enteties;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "restaurant_table")
@@ -16,6 +15,13 @@ public class Restaurant {
     @JoinColumn(name = "menu_id")
     private RestaurantMenu menu;
 
+    private String status = "open";
+    public Integer getRestaurantId() {
+        return restaurantId;
+    }
+    public void setRestaurantId(Integer restaurantId) {
+        this.restaurantId = restaurantId;
+    }
 
     public String getName() {
         return name;
@@ -33,5 +39,11 @@ public class Restaurant {
         this.menu = menu;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

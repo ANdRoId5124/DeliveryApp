@@ -1,7 +1,10 @@
 package com.example.deliveryapp.enteties;
 
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Table(name = "user_table")
@@ -16,7 +19,10 @@ public class User {
     private String password;
     @Column
     private String deliveryAddress;
-
+    @Column
+    private String status = "offline";
+    @OneToMany
+    private List<Order> orderBuffer = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
@@ -28,6 +34,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    public User(List<Order> orderBuffer) {
+        this.orderBuffer = orderBuffer;
+    }
+
+    public User() {
+    }
 
     public Integer getId() {
         return id;
@@ -83,5 +96,21 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<Order> getOrderBuffer() {
+        return orderBuffer;
+    }
+
+    public void setOrderBuffer(List<Order> orderBuffer) {
+        this.orderBuffer = orderBuffer;
     }
 }

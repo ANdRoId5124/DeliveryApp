@@ -1,11 +1,14 @@
 package com.example.deliveryapp.service;
 
 import com.example.deliveryapp.enteties.Restaurant;
+import com.example.deliveryapp.enteties.RestaurantMenu;
 import com.example.deliveryapp.enteties.User;
 import com.example.deliveryapp.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +38,9 @@ public class RestaurantService {
 
     public void deleteRestaurant(Restaurant restaurant){
         restaurantRepository.delete(restaurant);
+    }
+
+    public List<Restaurant> getAll(){
+        return restaurantRepository.findAll();
     }
 }

@@ -1,9 +1,8 @@
 package com.example.deliveryapp.enteties;
 
 
-
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity
 @Table(name = "food_table2")
@@ -16,8 +15,9 @@ public class Food {
     @Column
     private String foodName;
     @Column
-    private int price;
-
+    private double price;
+    @Column
+    private int amount;
 
     public Integer getFoodId() {
         return foodId;
@@ -35,14 +35,19 @@ public class Food {
         this.foodName = foodName;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
+    public int getAmount() {
+        return amount;
+    }
 
-
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }

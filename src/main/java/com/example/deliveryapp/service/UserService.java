@@ -6,6 +6,7 @@ import com.example.deliveryapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +19,10 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+    }
+
+    public List<User> getAll(){
+        return userRepository.findAll();
     }
 
     public User register(User user, Role role){

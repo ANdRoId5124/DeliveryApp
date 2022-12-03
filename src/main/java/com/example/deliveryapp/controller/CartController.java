@@ -24,9 +24,8 @@ public class CartController {
     }
 
     @GetMapping("/{id}")
-    public Cart getCart(@PathVariable Integer id){ // id need for test
-//        User user = userHolder.getAuthUser(); authUser in RELEASE this will be
-        User user = userService.findById(id).get(); // for testing
+    public Cart getCart(){
+        User user = userHolder.getAuthUser();
         return user.getCart();
     }
 
